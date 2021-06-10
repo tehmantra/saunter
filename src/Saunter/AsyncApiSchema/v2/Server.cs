@@ -19,7 +19,7 @@ namespace Saunter.AsyncApiSchema.v2
         /// location is relative to the location where the AsyncAPI document is being served.
         /// Variable substitutions will be made when a variable is named in { brackets }.
         /// </summary>
-        [JsonProperty("url")]
+        [JsonProperty("url", NullValueHandling = NullValueHandling.Ignore)]
         public string Url { get; }
 
         /// <summary>
@@ -27,28 +27,28 @@ namespace Saunter.AsyncApiSchema.v2
         /// Supported protocol include, but are not limited to: amqp, amqps, http, https,
         /// jms, kafka, kafka-secure, mqtt, secure-mqtt, stomp, stomps, ws, wss.
         /// </summary>
-        [JsonProperty("protocol")]
+        [JsonProperty("protocol", NullValueHandling = NullValueHandling.Ignore)]
         public string Protocol { get; }
 
         /// <summary>
         /// The version of the protocol used for connection.
         /// For instance: AMQP 0.9.1, HTTP 2.0, Kafka 1.0.0, etc.
         /// </summary>
-        [JsonProperty("protocolVersion")]
+        [JsonProperty("protocolVersion", NullValueHandling = NullValueHandling.Ignore)]
         public string ProtocolVersion { get; set; }
 
         /// <summary>
         /// An optional string describing the host designated by the URL.
         /// CommonMark syntax MAY be used for rich text representation.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         /// <summary>
         /// A map between a variable name and its value.
         /// The value is used for substitution in the server's URL template.
         /// </summary>
-        [JsonProperty("variables")]
+        [JsonProperty("variables", NullValueHandling = NullValueHandling.Ignore)]
         public IDictionary<string, ServerVariable> Variables { get; set; }
 
         /// <summary>
@@ -57,14 +57,14 @@ namespace Saunter.AsyncApiSchema.v2
         /// that can be used. Only one of the security requirement objects need to
         /// be satisfied to authorize a connection or operation.
         /// </summary>
-        [JsonProperty("security")]
+        [JsonProperty("security", NullValueHandling = NullValueHandling.Ignore)]
         public IList<Dictionary<string, List<string>>> Security { get; set; }
 
         /// <summary>
         /// A free-form map where the keys describe the name of the protocol and the
         /// values describe protocol-specific definitions for the server.
         /// </summary>
-        [JsonProperty("bindings")]
+        [JsonProperty("bindings", NullValueHandling = NullValueHandling.Ignore)]
         public ServerBindings Bindings { get; set; }
     }
     
@@ -94,5 +94,34 @@ namespace Saunter.AsyncApiSchema.v2
         /// </summary>
         [JsonProperty("examples")]
         public IList<string> Examples { get; set; }
+    }
+
+    public static class ServerProtocol
+    {
+        public const string Amqp = "amqp";
+
+        public const string Amqps = "amqps";
+
+        public const string Http = "http";
+
+        public const string Https = "https";
+
+        public const string Jms = "jms";
+
+        public const string Kafka = "kafka";
+
+        public const string KafkaSecure = "kafka-secure";
+
+        public const string Mqtt = "mqtt";
+
+        public const string SecureMqtt = "secure-mqtt";
+
+        public const string Stomp = "stomp";
+
+        public const string Stomps = "stomps";
+
+        public const string Ws = "ws";
+
+        public const string Wss = "wss";
     }
 }

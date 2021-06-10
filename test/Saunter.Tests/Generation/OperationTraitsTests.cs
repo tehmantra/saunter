@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Saunter.AsyncApiSchema.v2;
+using Saunter.AsyncApiSchema.v2.Traits;
 using Saunter.Generation;
 using Saunter.Generation.Filters;
 using Shouldly;
@@ -41,7 +42,7 @@ namespace Saunter.Tests.Generation
         }
         
         
-        private class TestOperationTraitsFilter : OperationFilter
+        private class TestOperationTraitsFilter : IOperationFilter
         {
             public void Apply(Operation publishOperation, OperationFilterContext context)
             {

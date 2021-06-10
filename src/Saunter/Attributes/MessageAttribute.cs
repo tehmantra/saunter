@@ -2,7 +2,7 @@ using System;
 
 namespace Saunter.Attributes
 {
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class MessageAttribute : Attribute
     {
         public MessageAttribute(Type payloadType)

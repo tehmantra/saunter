@@ -22,9 +22,11 @@ namespace Saunter.AsyncApiSchema.v2
         /// A verbose explanation of the parameter.
         /// CommonMark syntax can be used for rich text representation.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
+        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+        public string Name { get; set; }
         /// <summary>
         /// Definition of the parameter.
         /// </summary>
@@ -36,7 +38,7 @@ namespace Saunter.AsyncApiSchema.v2
         /// Even when a definition for the target field exists, it MUST NOT be used to validate
         /// this parameter but, instead, the schema property MUST be used.
         /// </summary>
-        [JsonProperty("location")]
+        [JsonProperty("location", NullValueHandling = NullValueHandling.Ignore)]
         public string Location { get; set; }
     }
 }

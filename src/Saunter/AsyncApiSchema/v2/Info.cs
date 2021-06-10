@@ -13,40 +13,40 @@ namespace Saunter.AsyncApiSchema.v2 {
         /// <summary>
         /// The title of the application.
         /// </summary>
-        [JsonProperty("title")]
+        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; }
 
         /// <summary>
         /// Provides the version of the application API
         /// (not to be confused with the specification version).
         /// </summary>
-        [JsonProperty("version")]
+        [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
         public string Version { get; }
 
         /// <summary>
         /// A short description of the application.
         /// CommonMark syntax can be used for rich text representation.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         /// <summary>
         /// A URL to the Terms of Service for the API
         /// MUST be in the format of a URL.
         /// </summary>
-        [JsonProperty("termsOfService")]
+        [JsonProperty("termsOfService", NullValueHandling = NullValueHandling.Ignore)]
         public string TermsOfService { get; set; }
 
         /// <summary>
         /// The contact information for the exposed API.
         /// </summary>
-        [JsonProperty("contact")]
+        [JsonProperty("contact", NullValueHandling = NullValueHandling.Ignore)]
         public Contact Contact { get; set; }
 
         /// <summary>
         /// The license information for the exposed API.
         /// </summary>
-        [JsonProperty("license")]
+        [JsonProperty("license", NullValueHandling = NullValueHandling.Ignore)]
         public License License { get; set; }
     }
     

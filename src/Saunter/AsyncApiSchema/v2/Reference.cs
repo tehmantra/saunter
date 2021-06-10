@@ -20,5 +20,8 @@ namespace Saunter.AsyncApiSchema.v2
 
         [JsonProperty("$ref")]
         public string Ref => string.Format(_path, _id);
+        
+        [JsonIgnore()]
+        public string Id => _id;
     }
 }

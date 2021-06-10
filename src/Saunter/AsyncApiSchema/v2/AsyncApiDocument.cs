@@ -10,19 +10,19 @@ namespace Saunter.AsyncApiSchema.v2
         /// <summary>
         /// Specifies the AsyncAPI Specification version being used.
         /// </summary>
-        [JsonProperty("asyncapi")]
+        [JsonProperty("asyncapi", NullValueHandling = NullValueHandling.Ignore)]
         public string AsyncApi { get; } = "2.0.0";
         
         /// <summary>
         /// Identifier of the application the AsyncAPI document is defining.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
 
         /// <summary>
         /// Provides metadata about the API. The metadata can be used by the clients if needed.
         /// </summary>
-        [JsonProperty("info")]
+        [JsonProperty("info", NullValueHandling = NullValueHandling.Ignore)]
         public Info Info { get; set; }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Saunter.AsyncApiSchema.v2
         /// A string representing the default content type to use when encoding/decoding a message's payload.
         /// The value MUST be a specific media type (e.g. application/json).
         /// </summary>
-        [JsonProperty("defaultContentType")]
+        [JsonProperty("defaultContentType", NullValueHandling = NullValueHandling.Ignore)]
         public string DefaultContentType { get; set; } = "application/json";
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Saunter.AsyncApiSchema.v2
         /// An element to hold various schemas for the specification.
         /// </summary>
         [JsonProperty("components")]
-        public Components Components { get; } = new Components();
+        public Components Components { get; set; } = new Components();
 
         /// <summary>
         /// A list of tags used by the specification with additional metadata.
@@ -60,7 +60,19 @@ namespace Saunter.AsyncApiSchema.v2
         /// <summary>
         /// Additional external documentation.
         /// </summary>
-        [JsonProperty("externalDocs")]
+        [JsonProperty("externalDocs", NullValueHandling = NullValueHandling.Ignore)]
         public ExternalDocumentation ExternalDocs { get; set; }
+
+
+
+        public bool ShouldSerializeTags()
+        {
+            return Tags != null && Tags.Count > 0;
+        }
+
+        public bool ShouldSerializeServers()
+        {
+            return Servers != null && Servers.Count > 0;
+        }
     }
 }

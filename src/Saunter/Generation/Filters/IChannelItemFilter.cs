@@ -24,9 +24,6 @@ namespace Saunter.Generation.Filters
         public MemberInfo Member { get; }
         public JsonSchemaResolver SchemaResolver { get; }
 
-        [Obsolete("use SchemaResolver", true)]
-        public ISchemaRepository SchemaRepository { get; }
-
         public ChannelAttribute Channel { get; }
     }
 }

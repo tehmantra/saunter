@@ -76,7 +76,7 @@ namespace StreetlightsAPI
             // Simulate subscribing to a channel.
             // In reality this would call some kind of pub/sub client library to subscribe.
             // e.g. amqpClient.BasicConsume(LightMeasuredTopic, ...);
-            _logger.LogInformation("Subscribing to {Topic} with payload {Payload} ", payload, SubscribeLightMeasuredTopic);
+            _logger.LogInformation("Subscribing to {Topic} with payload {Payload} ", SubscribeLightMeasuredTopic, payload);
         }
     }
 }

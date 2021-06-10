@@ -29,12 +29,35 @@ namespace Saunter.Generation.SchemaGeneration
             {
                 // TODO: how to use our SchemaIdFactory here? Do we need to?
                 var schemaId = _settings.TypeNameGenerator.Generate(schema, typeNameHint, _document.Components.Schemas.Keys.Select(k => k.ToString()));
-                
+
                 if (!string.IsNullOrEmpty(schemaId) && !_document.Components.Schemas.ContainsKey(schemaId))
-                    _document.Components.Schemas.Add(new ComponentFieldName(schemaId), schema);
+                {
+                    _document.Components.Schemas.Add(schemaId, schema);
+                    schema.Id = schemaId;
+                }
                 else
-                    _document.Components.Schemas.Add(new ComponentFieldName("ref_" + Guid.NewGuid().ToString().Replace("-", "_")), schema);
+                    _document.Components.Schemas.Add("ref_" + Guid.NewGuid().ToString().Replace("-", "_"), schema);
             }
+        }
+
+        public IMessage GetMessageOrReference(Message message)
+        {
+            var id = message.Name;
+            if (id == null)
+            {
+                return message;
+            }
+
+            if (!_document.Components.Messages.ContainsKey(id))
+            {
+                _document.Components.Messages.Add(id, message);
+                message.Payload = new JsonSchema()
+                {
+                    Reference = message.Payload
+                };
+            }
+
+            return new MessageReference(id);
         }
     }
 }

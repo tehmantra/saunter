@@ -21,8 +21,5 @@ namespace Saunter.Generation.Filters
         
         public IEnumerable<Type> AsyncApiTypes { get; }
         public JsonSchemaResolver SchemaResolver { get; }
-
-        [Obsolete("use SchemaResolver", true)]
-        public ISchemaRepository SchemaRepository { get; }
     }
 }

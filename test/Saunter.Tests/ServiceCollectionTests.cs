@@ -10,21 +10,21 @@ namespace Saunter.Tests
     /// <remarks>
     /// These are not real tests! Tests will be added once the API is semi-stable...
     /// </remarks>
-    public class Tests
+    public class ServiceCollectionTests
     {
 
         [Fact]
-        public void Test1()
+        public void TestAddAsyncApiSchemaGeneration()
         {
             var services = new ServiceCollection() as IServiceCollection;
             services.AddAsyncApiSchemaGeneration(options =>
                 {
                     options.AsyncApi = new AsyncApiSchema.v2.AsyncApiDocument
                     {
-                        Id = new Identifier("urn:com:example:example-events"),
-                        Info = new Info("Example API", "An example API with events")
+                        Id = "urn:com:example:example-events",
+                        Info = new Info("Example API", "2019.01.12345")
                         {
-                            Version = "2019.01.12345",
+                            Description = "An example API with events",
                             Contact = new Contact
                             {
                                 Email = "michael@mwild.me",
@@ -41,13 +41,13 @@ namespace Saunter.Tests
                                 "development", 
                                 new Server("rabbitmq.dev.mwild.me", "amqp")
                                 {
-                                    Security = new List<SecurityRequirement> { new SecurityRequirement { { "user-password", new List<string>() } }}
+                                    Security = new List<Dictionary<string, List<string>>> { new Dictionary<string, List<string>> { { "user-password", new List<string>() } }}
                                 }
                             }
                         },
                         Components =
                         {
-                            SecuritySchemes = new Dictionary<ComponentFieldName, SecurityScheme>
+                            SecuritySchemes = new Dictionary<string, SecurityScheme>
                             {
                                 { "user-password", new SecurityScheme(SecuritySchemeType.Http) }
                             }

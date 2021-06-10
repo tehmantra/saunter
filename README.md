@@ -3,9 +3,7 @@
 ![CI](https://github.com/tehmantra/saunter/workflows/CI/badge.svg)
 [![NuGet Badge](https://buildstats.info/nuget/saunter?includePreReleases=true)](https://www.nuget.org/packages/Saunter/)
 
-
 Saunter is an [AsyncAPI](https://github.com/asyncapi/asyncapi) documentation generator for dotnet.
-
 
 ## Getting Started
 
@@ -92,109 +90,107 @@ See [examples/StreetlightsAPI](examples/StreetlightsAPI).
     ```
 
 ## Bindings
-Bindings are used to describe protocol specific information. Currently the only implementation is via filters
+Bindings are used to describe protocol specific information. These can be added by creating a Filter which will be applied to each operation during the AsyncAPI document generation.
 
-**Http bindings:**
- 
-To use Http Operation filter add in the `ConfigureServices` method of the `Startup.cs`
+To use a filter, create a class which implements `IOperationFilter` and register it in `Startup.cs` 
 
- ``` 
-    services.AddAsyncApiSchemaGeneration(options =>
+In the filter you can set custom binding information.
+
+```csharp
+public class MyCustomOperationFilter : IOperationFilter
+{
+    public void Apply(Operation operation, OperationFilterContext context)
     {
-        options.OperationFilters.Add(new HttpOperationFilter());
-    });
+        // Here you have access to the generated Operation which you can modify.
+        // You are also provided with the Context which contains things like the MethodInfo and Attribute
+        // used to generate the Operation.
+        
+        operation.Bindings = new OperationBindings
+        {
+            Http = // set http binding info
+            Kafka = // set kafka binding info
+            // etc
+        }
+    }
+}
+```
+
+```csharp
+services.AddAsyncApiSchemaGeneration(options =>
+{
+    options.OperationFilters.Add(new MyCustomOperationFilter());
 });
 ```
 
-and create a new class into your app called `HttpOperationFilter` 
+Once these steps are complete, when you generate your documentation any class with a `[PublishOperation]` or `[SubscribeOperation]` attributes will have the binding information added to the documentation.
 
-```
-public class HttpOperationFilter : OperationFilter
+
+### Http Bindings
+
+Example HTTP binding operation filter
+ 
+```csharp
+public class HttpOperationFilter : IOperationFilter
+{
+    public void Apply(Operation operation, OperationFilterContext context)
     {
-        public void Apply(Operation operation, OperationFilterContext context)
+        operation.Bindings = new OperationBindings
         {
-            operation.Bindings = new OperationBindings
+            Http = new HttpOperationBinding
             {
-                Http = new HttpOperationBinding
+                Type = "request",
+                Method = "GET",
+                Query = new HttpOperationBindingQuery
                 {
-                    Type = "request",
-                    Method = "GET",
-                    Query = new HttpOperationBindingQuery
+                    Type = "object",
+                    Required = new string[] { "companyId" },
+                    Properties = new
                     {
-                        Type = "object",
-                        Required = new string[] { "companyId" },
-                        Properties = new
+                        CompanyId = new
                         {
-                            CompanyId = new
-                            {
-                                Type = "number",
-                                Minimum = 1,
-                                Desciption = "The Id of the company."
-                            }
-                        },
-                        AdditionalProperties = false
+                            Type = "number",
+                            Minimum = 1,
+                            Desciption = "The Id of the company."
+                        }
                     },
-                    BindingVersion = "0.1.0"
-                }
-            };
-        }
+                    AdditionalProperties = false
+                },
+                BindingVersion = "0.1.0"
+            }
+        };
     }
+}
 ```
-In the `HttpOperationFilter` you can customise the binding information. 
 
-Once these steps are complete, when you generate your documentation any class with a `[PublishOperation()]` or `[SubscribeOperation()]` attributes will have the http binding information added to the documentation.
-
-
-**Kafka bindings:**
+### Kafka Bindings
  
-To use Kafka Operation filter add in the `ConfigureServices` method of the `Startup.cs`
+Example Kafka binding operation filter
 
- ``` 
-    services.AddAsyncApiSchemaGeneration(options =>
+```csharp
+public class KafkaOperationFilter : IOperationFilter
+{
+    public void Apply(Operation operation, OperationFilterContext context)
     {
-        options.OperationFilters.Add(new KafkaOperationFilter());
-    });
-});
-```
-
-and create a new class into your app called `KafkaOperationFilter` 
-
-```
-public class KafkaOperationFilter : OperationFilter
-    {
-        public void Apply(Operation operation, OperationFilterContext context)
+        operation.Bindings = new OperationBindings
         {
-            operation.Bindings = new OperationBindings
-            {
-                Kafka = new KafkaOperationBinding
-                {          
-                    GroupId = new KafkaOperationBindingGroupId
-                    {
-                        Type = "string",
-                        Enum = new string[] { "myGroupId" }     
-                    },
-                    ClientId = new KafkaOperationBindingClientId
-                    {
-                        Type = "string",
-                        Enum = new string[] { "myClientId" }
-                    },
-                    BindingVersion = "0.1.0"
-                }
-            };
-        }
+            Kafka = new KafkaOperationBinding
+            {          
+                GroupId = new KafkaOperationBindingGroupId
+                {
+                    Type = "string",
+                    Enum = new string[] { "myGroupId" }     
+                },
+                ClientId = new KafkaOperationBindingClientId
+                {
+                    Type = "string",
+                    Enum = new string[] { "myClientId" }
+                },
+                BindingVersion = "0.1.0"
+            }
+        };
     }
+}
 ```
-In the `KafkaOperationFilter` you can customise the binding information. 
-
-Once these steps are complete, when you generate your documentation any class with a `[PublishOperation()]` or `[SubscribeOperation()]` attributes will have the kafka binding information added to the documentation.
-
-
-## Changelog
-
-This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-See [CHANGELOG.md](./CHANGELOG.md) for all changes.
-
 
 ## Contributing
 

@@ -1,9 +1,13 @@
 #if !NETSTANDARD2_0
+
 using System;
 using System.Net;
+using System.Net.Mime;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Saunter.Utils;
 
 namespace Saunter
 {
@@ -18,40 +22,24 @@ namespace Saunter
             _options = options;
         }
 
-        public async Task Invoke(HttpContext context, IAsyncApiDocumentProvider asyncApiDocumentProvider)
+        public async Task Invoke(HttpContext context, IAsyncApiDocumentProvider asyncApiDocumentProvider, IAsyncApiDocumentSerializer asyncApiDocumentSerializer)
         {
             if (!IsRequestingAsyncApiSchema(context.Request))
             {
                 await _next(context);
                 return;
             }
-            
+
             var asyncApiSchema = asyncApiDocumentProvider.GetDocument();
 
-            await RespondWithAsyncApiSchemaJson(context.Response, asyncApiSchema);
+            await RespondWithAsyncApiSchemaJson(context.Response, asyncApiSchema, asyncApiDocumentSerializer);
         }
 
-        private async Task RespondWithAsyncApiSchemaJson(HttpResponse response, AsyncApiSchema.v2.AsyncApiDocument asyncApiSchema)
+        private async Task RespondWithAsyncApiSchemaJson(HttpResponse response, AsyncApiSchema.v2.AsyncApiDocument asyncApiSchema, IAsyncApiDocumentSerializer asyncApiDocumentSerializer)
         {
-            // TODO: figure out why this works but the commented out System.Text.Json does not!
-            var asyncApiSchemaJson = Newtonsoft.Json.JsonConvert.SerializeObject(asyncApiSchema);
-
-            // var asyncApiSchemaJson = JsonSerializer.Serialize(
-            //     asyncApiSchema,
-            //     new JsonSerializerOptions
-            //     {
-            //         WriteIndented = false,
-            //         IgnoreNullValues = true,
-            //         Converters =
-            //         {
-            //             new DictionaryKeyToStringConverter(),
-            //             new InterfaceImplementationConverter(),
-            //         },
-            //     }
-            // );
-
-            response.StatusCode = (int) HttpStatusCode.OK;
-            response.ContentType = "application/json";
+            var asyncApiSchemaJson = asyncApiDocumentSerializer.Serialize(asyncApiSchema);
+            response.StatusCode = (int)HttpStatusCode.OK;
+            response.ContentType = asyncApiDocumentSerializer.ContentType;
 
             await response.WriteAsync(asyncApiSchemaJson);
         }
@@ -63,4 +51,5 @@ namespace Saunter
         }
     }
 }
+
 #endif
